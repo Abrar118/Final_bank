@@ -1,0 +1,21 @@
+{
+  "result": "success",
+  "note": "Approximate offline rates bundled with MAT Bank. Used only when live rates are unavailable.",
+  "time_last_update_unix": 1748736000,
+  "base_code": "BDT",
+  "rates": {
+    "BDT": 1,
+    "USD": 0.00817661488144,
+    "EUR": 0.00701754385965,
+    "GBP": 0.00602409638554,
+    "INR": 0.699300699301,
+    "SAR": 0.0306748466258,
+    "AED": 0.03003003003,
+    "MYR": 0.0346020761246,
+    "SGD": 0.0104821802935,
+    "JPY": 1.17647058824,
+    "CNY": 0.0588235294118,
+    "CAD": 0.0111607142857,
+    "AUD": 0.0124688279302
+  }
+}
