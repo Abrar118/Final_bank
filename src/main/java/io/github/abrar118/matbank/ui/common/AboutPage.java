@@ -20,22 +20,37 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+
+import java.util.List;
+import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.fontawesome5.FontAwesomeBrands;
 import org.kordamp.ikonli.material2.Material2OutlinedAL;
 import org.kordamp.ikonli.material2.Material2OutlinedMZ;
 
 /** The story of the app and the three people who built it in 2022. */
 public final class AboutPage implements Page {
 
-    private record Member(String name, String photo) {
+    private record Link(Ikon icon, String url) {
     }
 
+    private record Member(String name, String photo, List<Link> links) {
+    }
+
+    /** The team and the social links from the 2022 About screen. */
     private static final Member[] TEAM = {
-            new Member("Abrar Mahir Esam", "team/abrar.jpg"),
-            new Member("Mehmil Khan", "team/mehmil.jpg"),
-            new Member("Farheen Mahjarin Trisha", "team/trisha.jpg")};
+            new Member("Abrar Mahir Esam", "team/abrar.jpg", List.of(
+                    new Link(FontAwesomeBrands.FACEBOOK, "https://www.facebook.com/abrarme118"),
+                    new Link(FontAwesomeBrands.INSTAGRAM, "https://www.instagram.com/orion_abrar"),
+                    new Link(FontAwesomeBrands.GITHUB, "https://github.com/Abrar118"))),
+            new Member("Mehmil Khan", "team/mehmil.jpg", List.of(
+                    new Link(FontAwesomeBrands.FACEBOOK, "https://www.facebook.com/mehmil.khan.18400"),
+                    new Link(FontAwesomeBrands.INSTAGRAM, "https://www.instagram.com/mehmilxxj"))),
+            new Member("Farheen Mahjarin Trisha", "team/trisha.jpg", List.of(
+                    new Link(FontAwesomeBrands.FACEBOOK, "https://www.facebook.com/farheen.trisha"),
+                    new Link(FontAwesomeBrands.INSTAGRAM, "https://www.instagram.com/mahjarin_tush")))};
 
     private static final String[][] THEN_AND_NOW = {
-            {"Platform", "JDK 19, JavaFX 19 early access", "JDK 25 LTS, JavaFX 25 LTS"},
+            {"Platform", "JDK 19, JavaFX 19 early access", "JDK 21 LTS, JavaFX 21 LTS"},
             {"Storage", "Text files in ~/Music/Data", "SQLite with versioned migrations"},
             {"Money", "double, rounded on screen", "Exact integer poisha, one ledger"},
             {"Passwords", "Plain text", "bcrypt hashes, lockout, audit log"},
@@ -109,7 +124,15 @@ public final class AboutPage implements Page {
         Label name = Ui.label(m.name(), Styles.TITLE_4);
         name.setWrapText(true);
         name.setAlignment(Pos.CENTER);
-        VBox card = Ui.card(ring, name, Ui.muted("CSE, MIST"));
+        HBox links = new HBox(4);
+        links.setAlignment(Pos.CENTER);
+        for (Link link : m.links()) {
+            Button button = Ui.iconButton(link.icon(), link.url().replaceFirst("https://(www\\.)?", ""));
+            button.getStyleClass().add("social-link");
+            button.setOnAction(e -> Ui.open(link.url()));
+            links.getChildren().add(button);
+        }
+        VBox card = Ui.card(ring, name, Ui.muted("CSE, MIST"), links);
         card.setAlignment(Pos.CENTER);
         HBox.setHgrow(card, Priority.ALWAYS);
         card.setMaxWidth(Double.MAX_VALUE);

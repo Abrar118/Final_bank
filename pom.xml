@@ -9,14 +9,22 @@
     <version>2.0.0</version>
     <name>MAT Bank</name>
     <description>MAT Bank desktop banking app, rebuilt from the 2022 student project.</description>
+    <url>https://github.com/Abrar118/Final_bank</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.release>25</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
 
         <main.class>io.github.abrar118.matbank.Launcher</main.class>
 
-        <javafx.version>25.0.4</javafx.version>
+        <javafx.version>21.0.12</javafx.version>
         <atlantafx.version>2.1.0</atlantafx.version>
         <ikonli.version>12.4.0</ikonli.version>
         <sqlite.version>3.53.4.0</sqlite.version>
@@ -48,6 +56,11 @@
         <dependency>
             <groupId>org.kordamp.ikonli</groupId>
             <artifactId>ikonli-material2-pack</artifactId>
+            <version>${ikonli.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.kordamp.ikonli</groupId>
+            <artifactId>ikonli-fontawesome5-pack</artifactId>
             <version>${ikonli.version}</version>
         </dependency>
         <dependency>
@@ -112,8 +125,8 @@
                         <configuration>
                             <rules>
                                 <requireJavaVersion>
-                                    <version>[25,)</version>
-                                    <message>MAT Bank needs JDK 25 or newer.</message>
+                                    <version>[21,)</version>
+                                    <message>MAT Bank needs JDK 21 or newer.</message>
                                 </requireJavaVersion>
                                 <requireMavenVersion>
                                     <version>[3.9,)</version>

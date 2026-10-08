@@ -494,3 +494,11 @@
 .button.on-dark {
     -fx-text-fill: white;
 }
+
+.social-link .ikonli-font-icon {
+    -fx-icon-color: -color-fg-muted;
+}
+
+.social-link:hover .ikonli-font-icon {
+    -fx-icon-color: -mat-brand;
+}

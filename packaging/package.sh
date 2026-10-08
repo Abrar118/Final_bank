@@ -4,8 +4,8 @@
 #   packaging/package.sh            # deb on Linux, dmg on macOS, msi on Windows (Git Bash)
 #   packaging/package.sh app-image  # just the runnable folder, no installer
 #
-# Steps: Maven builds the jar and copies its dependencies to target/lib; jlink makes a trimmed Java 25 runtime
-# that already contains JavaFX; jpackage wraps runtime + jars into a native app. Needs JDK 25 on PATH or
+# Steps: Maven builds the jar and copies its dependencies to target/lib; jlink makes a trimmed Java 21 runtime
+# that already contains JavaFX; jpackage wraps runtime + jars into a native app. Needs JDK 21 on PATH or
 # JAVA_HOME. Windows MSIs also need the WiX Toolset.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -25,7 +25,7 @@ WORK=target/package
 DIST=target/dist
 
 echo "==> Building MAT Bank ${VERSION} (${OS}, ${TYPE})"
-./mvnw -B -q package -DskipTests
+./mvnw -B -q clean package -DskipTests
 
 rm -rf "$WORK" "$DIST"
 mkdir -p "$WORK/input" "$DIST"
@@ -36,7 +36,7 @@ JAVAFX_JARS=()
 for jar in target/lib/*.jar; do
     name="$(basename "$jar")"
     if [[ "$name" == javafx-* ]]; then
-        # Only the platform-specific jars (e.g. javafx-graphics-25.0.4-linux.jar) contain the modules.
+        # Only the platform-specific jars (e.g. javafx-graphics-21.0.12-linux.jar) contain the modules.
         [[ "$name" =~ ^javafx-[a-z]+-[0-9.]+-.+\.jar$ ]] && JAVAFX_JARS+=("$jar")
     else
         cp "$jar" "$WORK/input/"
@@ -64,7 +64,7 @@ ARGS=(
     --name "MAT Bank"
     --app-version "$VERSION"
     --vendor "MAT Bank"
-    --description "Desktop banking demo, first built in 2022 and rebuilt with JavaFX 25"
+    --description "Desktop banking demo, first built in 2022 and rebuilt with JavaFX 21"
     --copyright "Copyright (c) 2022-2026 Abrar Mahir Esam, Mehmil Khan, Farheen Mahjarin Trisha"
     --input "$WORK/input"
     --main-jar "$JAR"

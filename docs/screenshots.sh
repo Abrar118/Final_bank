@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Regenerates docs/screenshots from a fresh demo bank. Needs JDK 25; on a headless Linux box it uses xvfb-run.
+# Regenerates docs/screenshots from a fresh demo bank. Needs JDK 21; on a headless Linux box it uses xvfb-run.
 #   docs/screenshots.sh [output-dir]
 set -euo pipefail
 cd "$(dirname "$0")/.."

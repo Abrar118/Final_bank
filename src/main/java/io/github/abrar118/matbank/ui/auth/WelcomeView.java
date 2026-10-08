@@ -70,7 +70,7 @@ public final class WelcomeView {
         HBox wordmark = Ui.wordmark(64);
         Label tagline = Ui.wrapped("For keeping your finances swift and efficient.", "hero-tagline");
         Label sub = Ui.wrapped("Ensuring a safe and secured way to manage your money. First built by three MIST "
-                + "students in 2022, rebuilt in 2026 with JavaFX 25.", Styles.TEXT_MUTED, "hero-sub");
+                + "students in 2022, rebuilt in 2026 with JavaFX 21.", Styles.TEXT_MUTED, "hero-sub");
 
         Button start = Ui.primary("Get started", Material2OutlinedAL.ARROW_FORWARD);
         start.getStyleClass().add(Styles.LARGE);
@@ -179,7 +179,7 @@ public final class WelcomeView {
 
     private Node whatsNew() {
         VBox list = new VBox(8,
-                update("2026", "Rebuilt on JavaFX 25 with light and dark themes"),
+                update("2026", "Rebuilt on JavaFX 21 with light and dark themes"),
                 update("2026", "SQLite storage, PDF statements, scheduled payments"),
                 update("2022", "Interest on fixed deposits increased to 10%"),
                 update("2022", "Admin list updated for spring 2022"));

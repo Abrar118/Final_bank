@@ -5,10 +5,11 @@
 <h1 align="center">MAT Bank</h1>
 
 <p align="center">
-  A desktop banking app, first built by three students in 2022 and rebuilt in 2026 with JavaFX 25.<br>
+  A desktop banking app, first built by three students in 2022 and rebuilt in 2026 with JavaFX 21.<br>
   <a href="https://github.com/Abrar118/Final_bank/actions/workflows/ci.yml"><img src="https://github.com/Abrar118/Final_bank/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <img src="https://img.shields.io/badge/Java-25%20LTS-orange" alt="Java 25">
-  <img src="https://img.shields.io/badge/JavaFX-25%20LTS-blue" alt="JavaFX 25">
+  <img src="https://img.shields.io/badge/Java-21%20LTS-orange" alt="Java 21">
+  <img src="https://img.shields.io/badge/JavaFX-21%20LTS-blue" alt="JavaFX 21">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-green" alt="Apache 2.0"></a>
 </p>
 
 ![Client dashboard](docs/screenshots/dashboard.png)
@@ -26,7 +27,7 @@ branch.
 
 | | 2022 | 2026 |
 |---|---|---|
-| Platform | JDK 19, JavaFX 19 early access | JDK 25 LTS, JavaFX 25 LTS |
+| Platform | JDK 19, JavaFX 19 early access | JDK 21 LTS, JavaFX 21 LTS |
 | Storage | Text files in `~/Music/Data` | SQLite with versioned migrations |
 | Money | `double`, rounded on screen | Exact integer poisha in one ledger with running balances |
 | Passwords | Plain text | bcrypt hashes, lockout after 5 attempts, audit log |
@@ -59,7 +60,7 @@ The installers aren't code-signed. On macOS, right-click the app and choose **Op
 
 ### Run from source
 
-You need JDK 25. Maven comes with the project.
+You need JDK 21. Maven comes with the project.
 
 ```bash
 git clone https://github.com/Abrar118/Final_bank.git
@@ -126,9 +127,9 @@ Some decisions worth knowing:
   `UPDATE ... WHERE balance >= amount`, so concurrent transfers can't overdraw an account. There's a test for that.
 - **No FXML.** Views are plain Java, which keeps them refactorable and testable. The UI tests drive the real
   sign-in, transfer and deposit flows and check the database.
-- **AtlantaFX 2.1**, because AtlantaFX 3.0 is built against JavaFX 27 and the app stays on the JavaFX 25 LTS line.
+- **AtlantaFX 2.1**, because AtlantaFX 3.0 is built against JavaFX 27 and the app stays on the JavaFX 21 LTS line, which runs on Java 21.
 - **Class path plus a jlinked runtime.** Some dependencies (bcrypt, PDFBox) aren't real Java modules. The installers
-  therefore ship a trimmed Java 25 runtime that contains JavaFX, and run the app jars on the class path.
+  therefore ship a trimmed Java 21 runtime that contains JavaFX, and run the app jars on the class path.
 - **Slow work stays off the UI thread.** bcrypt, PDF rendering and network calls run on virtual threads.
 
 ### Where your data lives
@@ -164,3 +165,8 @@ attaches them to a GitHub release.
 - Exchange rates by [ExchangeRate-API](https://www.exchangerate-api.com) (open access endpoint)
 
 MAT Bank is a demo. It isn't a real bank and no real money moves.
+
+## License
+
+Licensed under the [Apache License, Version 2.0](LICENSE). Copyright 2022-2026 Abrar Mahir Esam, Mehmil Khan and
+Farheen Mahjarin Trisha.
