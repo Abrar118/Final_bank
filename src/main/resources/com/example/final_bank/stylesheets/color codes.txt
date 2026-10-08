@@ -1,4 +1,0 @@
-background : #041027
-
-text: #eceef0 brown
-	#3f48cc blue
