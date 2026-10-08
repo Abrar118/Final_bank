@@ -17,7 +17,7 @@
         <main.class>io.github.abrar118.matbank.Launcher</main.class>
 
         <javafx.version>25.0.4</javafx.version>
-        <atlantafx.version>3.0.0</atlantafx.version>
+        <atlantafx.version>2.1.0</atlantafx.version>
         <ikonli.version>12.4.0</ikonli.version>
         <sqlite.version>3.53.4.0</sqlite.version>
         <bcrypt.version>0.10.2</bcrypt.version>

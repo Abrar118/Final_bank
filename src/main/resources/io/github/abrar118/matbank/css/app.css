@@ -1,0 +1,496 @@
+/*
+ * MAT Bank styles on top of AtlantaFX Primer. Colours come from the theme's looked-up colours so light and dark
+ * modes both work; the brand blue (#3f48cc) is the "MAT" colour from the 2022 logo text.
+ */
+
+.root {
+    -fx-font-family: "Inter", "Segoe UI", "SF Pro Text", "Helvetica Neue", sans-serif;
+    -fx-font-size: 13.5px;
+
+    -mat-brand: #3f48cc;
+    -mat-brand-soft: #eef0ff;
+    -mat-credit: #1a7f37;
+    -color-accent-fg: #3f48cc;
+    -color-accent-emphasis: #3f48cc;
+    -color-accent-muted: rgba(63, 72, 204, 0.4);
+    -color-accent-subtle: #eef0ff;
+}
+
+.root:dark {
+    -mat-brand: #8f97ff;
+    -mat-brand-soft: rgba(79, 88, 224, 0.18);
+    -mat-credit: #3fb950;
+    -color-accent-fg: #8f97ff;
+    -color-accent-emphasis: #4f58e0;
+    -color-accent-muted: rgba(143, 151, 255, 0.4);
+    -color-accent-subtle: rgba(79, 88, 224, 0.15);
+}
+
+/* ---------- Shell ---------- */
+
+.app-content, .workspace {
+    -fx-background-color: -color-bg-subtle;
+}
+
+.sidebar {
+    -fx-background-color: -color-bg-default;
+    -fx-border-color: transparent -color-border-muted transparent transparent;
+    -fx-border-width: 0 1 0 0;
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-padding: 9px 12px;
+    -fx-graphic-text-gap: 12px;
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-weight: 500;
+}
+
+.nav-button .ikonli-font-icon {
+    -fx-icon-color: -color-fg-muted;
+}
+
+.nav-button:hover {
+    -fx-background-color: -color-bg-subtle;
+    -fx-text-fill: -color-fg-default;
+}
+
+.nav-button:selected {
+    -fx-background-color: -color-accent-subtle;
+    -fx-text-fill: -mat-brand;
+    -fx-font-weight: bold;
+}
+
+.nav-button:selected .ikonli-font-icon {
+    -fx-icon-color: -mat-brand;
+}
+
+.nav-button:selected .label {
+    -fx-text-fill: -mat-brand;
+    -fx-font-weight: bold;
+}
+
+.nav-section {
+    -fx-text-fill: -color-fg-subtle;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-padding: 16px 12px 6px 12px;
+}
+
+.nav-badge {
+    -fx-background-color: -color-danger-emphasis;
+    -fx-text-fill: white;
+    -fx-background-radius: 10px;
+    -fx-padding: 1px 7px;
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-footer {
+    -fx-border-color: -color-border-muted transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
+    -fx-cursor: hand;
+}
+
+.top-bar {
+    -fx-background-color: -color-bg-default;
+    -fx-border-color: transparent transparent -color-border-muted transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+.page-scroll, .page-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ---------- Building blocks ---------- */
+
+.panel {
+    -fx-background-color: -color-bg-default;
+    -fx-background-radius: 12px;
+    -fx-border-color: -color-border-muted;
+    -fx-border-radius: 12px;
+    -fx-border-width: 1px;
+}
+
+.dialog {
+    -fx-background-radius: 14px;
+    -fx-border-radius: 14px;
+}
+
+.field-label {
+    -fx-font-weight: bold;
+    -fx-font-size: 12.5px;
+    -fx-text-fill: -color-fg-muted;
+}
+
+.field-prefix {
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.stat-value {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-fg-default;
+}
+
+.stat-tile .ikonli-font-icon {
+    -fx-icon-color: -mat-brand;
+}
+
+.chip {
+    -fx-background-color: -color-neutral-subtle;
+    -fx-text-fill: -color-fg-muted;
+    -fx-background-radius: 999px;
+    -fx-padding: 2px 10px;
+    -fx-font-size: 11.5px;
+    -fx-font-weight: bold;
+}
+
+.chip.accent {
+    -fx-background-color: -color-accent-subtle;
+    -fx-text-fill: -color-accent-fg;
+}
+
+.chip.success {
+    -fx-background-color: -color-success-subtle;
+    -fx-text-fill: -color-success-fg;
+}
+
+.chip.warning {
+    -fx-background-color: -color-warning-subtle;
+    -fx-text-fill: -color-warning-fg;
+}
+
+.chip.danger {
+    -fx-background-color: -color-danger-subtle;
+    -fx-text-fill: -color-danger-fg;
+}
+
+.amount {
+    -fx-font-weight: bold;
+}
+
+.amount.credit {
+    -fx-text-fill: -mat-credit;
+}
+
+.amount.debit {
+    -fx-text-fill: -color-fg-default;
+}
+
+.mono {
+    -fx-font-family: "DejaVu Sans Mono", "Consolas", "Menlo", monospace;
+    -fx-font-size: 12px;
+}
+
+.empty-state .ikonli-font-icon {
+    -fx-icon-color: -color-fg-subtle;
+}
+
+.link-button {
+    -fx-text-fill: -color-accent-fg;
+    -fx-padding: 0;
+    -fx-underline: true;
+}
+
+.dialog-error {
+    -fx-text-fill: -color-danger-fg;
+}
+
+/* ---------- Brand ---------- */
+
+.wordmark-mat {
+    -fx-text-fill: -mat-brand;
+    -fx-font-weight: 900;
+}
+
+.wordmark-bank {
+    -fx-text-fill: -color-fg-default;
+    -fx-font-weight: 900;
+}
+
+.on-dark .wordmark-bank, .on-dark.label, .on-dark .label {
+    -fx-text-fill: white;
+}
+
+.on-dark .wordmark-mat {
+    -fx-text-fill: #a5abff;
+}
+
+.on-dark.button .ikonli-font-icon {
+    -fx-icon-color: white;
+}
+
+.eyebrow {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-fg-muted;
+}
+
+.hero-tagline {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -color-fg-default;
+}
+
+.hero-sub {
+    -fx-font-size: 14.5px;
+}
+
+.feature .ikonli-font-icon {
+    -fx-icon-color: -mat-brand;
+}
+
+.slide-dot {
+    -fx-fill: rgba(255, 255, 255, 0.5);
+}
+
+.slide-dot.active {
+    -fx-fill: white;
+}
+
+.login-shade {
+    -fx-background-color: linear-gradient(to bottom, rgba(10, 12, 40, 0.25), rgba(10, 12, 40, 0.85));
+}
+
+.login-tagline {
+    -fx-font-size: 16px;
+}
+
+/* ---------- Bank cards (gold and silver, as on the 2022 dashboard) ---------- */
+
+.bank-card {
+    -fx-background-radius: 16px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.18), 18, 0.15, 0, 6);
+}
+
+.bank-card.gold {
+    -fx-background-color: linear-gradient(to bottom right, #5a3d0c 0%, #b8892e 45%, #e3c26f 62%, #8a6420 100%);
+}
+
+.bank-card.silver {
+    -fx-background-color: linear-gradient(to bottom right, #2f3a4a 0%, #6b7a8f 45%, #b9c3cf 62%, #4b5768 100%);
+}
+
+.bank-card .label, .bank-card .wordmark-bank, .bank-card .wordmark-mat {
+    -fx-text-fill: white;
+}
+
+.card-type {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-opacity: 0.85;
+}
+
+.card-chip {
+    -fx-background-color: linear-gradient(to bottom right, #f6e7b0, #c9a64a);
+    -fx-background-radius: 6px;
+    -fx-opacity: 0.9;
+}
+
+.card-caption {
+    -fx-font-size: 11px;
+    -fx-opacity: 0.8;
+}
+
+.card-balance {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.card-number {
+    -fx-font-family: "DejaVu Sans Mono", "Consolas", "Menlo", monospace;
+    -fx-font-size: 14px;
+}
+
+.card-holder {
+    -fx-font-size: 11px;
+    -fx-font-weight: bold;
+    -fx-opacity: 0.85;
+}
+
+/* ---------- Transactions ---------- */
+
+.tx-badge {
+    -fx-background-radius: 999px;
+    -fx-background-color: -color-neutral-subtle;
+}
+
+.tx-badge.in {
+    -fx-background-color: -color-success-subtle;
+}
+
+.tx-badge.in .ikonli-font-icon {
+    -fx-icon-color: -color-success-fg;
+}
+
+.tx-badge.out {
+    -fx-background-color: -color-accent-subtle;
+}
+
+.tx-badge.out .ikonli-font-icon {
+    -fx-icon-color: -color-accent-fg;
+}
+
+.tx-badge.fee {
+    -fx-background-color: -color-warning-subtle;
+}
+
+.tx-badge.fee .ikonli-font-icon {
+    -fx-icon-color: -color-warning-fg;
+}
+
+.tx-badge.internal .ikonli-font-icon {
+    -fx-icon-color: -color-fg-muted;
+}
+
+.ledger-row {
+    -fx-border-color: transparent transparent -color-border-muted transparent;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* ---------- Receipts and wizard ---------- */
+
+.receipt {
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 10px;
+    -fx-padding: 16px;
+}
+
+.panel.receipt {
+    -fx-background-color: -color-bg-default;
+    -fx-padding: 20px;
+}
+
+.receipt-total {
+    -fx-border-color: -color-border-default transparent transparent transparent;
+    -fx-border-style: segments(4, 4);
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 12px 0 0 0;
+}
+
+.success-banner .ikonli-font-icon {
+    -fx-icon-color: -color-success-fg;
+}
+
+.recipient-ok .ikonli-font-icon {
+    -fx-icon-color: -color-success-fg;
+}
+
+.step-number {
+    -fx-min-width: 28px;
+    -fx-min-height: 28px;
+    -fx-alignment: center;
+    -fx-background-radius: 999px;
+    -fx-background-color: -color-neutral-subtle;
+    -fx-text-fill: -color-fg-muted;
+    -fx-font-weight: bold;
+}
+
+.step .label {
+    -fx-text-fill: -color-fg-muted;
+}
+
+.step.active .step-number, .step.done .step-number {
+    -fx-background-color: -mat-brand;
+    -fx-text-fill: white;
+}
+
+.step.active .label, .step.done .label {
+    -fx-text-fill: -color-fg-default;
+}
+
+.step.active .step-number {
+    -fx-text-fill: white;
+}
+
+.step-line {
+    -fx-background-color: -color-border-default;
+    -fx-min-height: 2px;
+    -fx-pref-height: 2px;
+}
+
+/* ---------- Misc ---------- */
+
+.convert-result {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -mat-brand;
+}
+
+.temp-password {
+    -fx-font-family: "DejaVu Sans Mono", "Consolas", "Menlo", monospace;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-background-color: -color-bg-subtle;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 14px;
+}
+
+.rating-star {
+    -fx-icon-color: -color-fg-subtle;
+}
+
+.rating-star.on {
+    -fx-icon-color: #e3a008;
+}
+
+.unread-dot {
+    -fx-background-color: -mat-brand;
+    -fx-background-radius: 999px;
+}
+
+.message-body {
+    -fx-font-size: 14.5px;
+    -fx-line-spacing: 3px;
+}
+
+.team-photo {
+    -fx-background-color: linear-gradient(to bottom right, #3f48cc, #a855f7);
+    -fx-background-radius: 999px;
+}
+
+.avatar-initials {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.app-chart .chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+.app-chart .default-color0.chart-area-symbol, .app-chart .default-color0.chart-bar {
+    -fx-background-color: -mat-brand;
+}
+
+.app-chart .default-color0.chart-series-area-line {
+    -fx-stroke: -mat-brand;
+    -fx-stroke-width: 2.5px;
+}
+
+.app-chart .default-color0.chart-series-area-fill {
+    -fx-fill: linear-gradient(to bottom, rgba(63, 72, 204, 0.35), rgba(63, 72, 204, 0.02));
+}
+
+.app-chart .default-color1.chart-bar {
+    -fx-background-color: #d4a72c;
+}
+
+.app-chart .chart-legend-item-symbol.default-color0 {
+    -fx-background-color: -mat-brand;
+}
+
+.app-chart .chart-legend-item-symbol.default-color1 {
+    -fx-background-color: #d4a72c;
+}
+
+.nav-button:selected .nav-badge {
+    -fx-text-fill: white;
+}
+
+.button.on-dark {
+    -fx-text-fill: white;
+}

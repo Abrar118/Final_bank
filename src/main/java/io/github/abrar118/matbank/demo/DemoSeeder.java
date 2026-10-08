@@ -193,7 +193,7 @@ public final class DemoSeeder {
             }
         }
 
-        seedSupport(sim, clock, today, nusrat, tanvir, rahim, farhana, sabbir);
+        seedSupport(sim, clock, today, admin, nusrat, tanvir, rahim, farhana, sabbir);
 
         LocalDate yesterday = today.minusDays(1);
         Instant failed = yesterday.atTime(22, 41).atZone(zone).toInstant();
@@ -218,8 +218,20 @@ public final class DemoSeeder {
         });
     }
 
-    private static void seedSupport(AppContext sim, MutableClock clock, LocalDate today, User nusrat, User tanvir,
-                                    User rahim, User farhana, User sabbir) {
+    private static void seedSupport(AppContext sim, MutableClock clock, LocalDate today, User admin, User nusrat,
+                                    User tanvir, User rahim, User farhana, User sabbir) {
+        // Tanvir mistypes his password until the account locks, an admin issues a temporary password, and he
+        // sets his usual one again. All through the real services, so the sign-in history and audit log agree.
+        for (int i = 0; i < 5; i++) {
+            at(clock, today.minusDays(9), 19, 30 + i);
+            sim.auth().login(tanvir.email(), "tanvir" + i, Role.CLIENT, null);
+        }
+        at(clock, today.minusDays(9), 19, 52);
+        String temporary = sim.auth().resetClientPassword(admin, tanvir.id());
+        at(clock, today.minusDays(9), 20, 3);
+        sim.auth().login(tanvir.email(), temporary, Role.CLIENT, null);
+        sim.auth().changePassword(tanvir.id(), temporary, CLIENT_PASSWORD);
+
         at(clock, today.minusDays(9), 20, 12);
         sim.support().sendMessage(tanvir, null, null,
                 "I got locked out after mistyping my password a few times. Thanks for the quick reset!");

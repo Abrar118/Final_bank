@@ -89,6 +89,11 @@ public final class ExchangeRateService {
             return BigDecimal.ONE.divide(rate(code), MathContext.DECIMAL64);
         }
 
+        /** Units of {@code to} for one unit of {@code from}, unrounded. */
+        public BigDecimal unitRate(String from, String to) {
+            return rate(to).divide(rate(from), MathContext.DECIMAL64);
+        }
+
         public BigDecimal convert(BigDecimal amount, String from, String to) {
             BigDecimal inTaka = amount.divide(rate(from), MathContext.DECIMAL64);
             return inTaka.multiply(rate(to)).setScale(2, RoundingMode.HALF_EVEN);

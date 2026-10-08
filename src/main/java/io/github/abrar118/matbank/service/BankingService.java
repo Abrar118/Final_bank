@@ -98,7 +98,7 @@ public final class BankingService {
             if (quote.fee().isPositive()) {
                 afterFee = accounts.debit(c, account.id(), quote.fee()).orElseThrow();
                 ledger.insert(c, account.id(), TxKind.FEE, quote.fee().negate(), afterFee, null,
-                        "Deposit handling fee (2%)", null, txRef, now);
+                        "Deposit fee (2%)", null, txRef, now);
             }
             return new Receipt(txRef, now, to, amount, quote.fee(), quote.credited(), afterFee, null);
         });
@@ -138,7 +138,7 @@ public final class BankingService {
                 recipient.email(), "To " + recipient.fullName(), message, ref, now);
         if (quote.fee().isPositive()) {
             ledger.insert(c, source.id(), TxKind.FEE, quote.fee().negate(), afterFee, null,
-                    "Transfer charge (5% less 3% discount)", null, ref, now);
+                    "Transfer charge (2% net)", null, ref, now);
         }
         Money recipientBalance = accounts.credit(c, destination.id(), amount);
         ledger.insert(c, destination.id(), TxKind.TRANSFER_IN, amount, recipientBalance,

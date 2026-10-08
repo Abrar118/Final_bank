@@ -4,6 +4,8 @@ import io.github.abrar118.matbank.AppContext;
 import io.github.abrar118.matbank.TestBank;
 import io.github.abrar118.matbank.db.Database;
 import io.github.abrar118.matbank.db.Migrator;
+import io.github.abrar118.matbank.domain.AuditEvent;
+import io.github.abrar118.matbank.domain.LoginEvent;
 import io.github.abrar118.matbank.domain.Role;
 import io.github.abrar118.matbank.service.AuthService;
 import io.github.abrar118.matbank.service.ExchangeRateService;
@@ -52,7 +54,12 @@ class DemoSeederTest {
                 .anySatisfy(p -> assertThat(p.active()).isFalse())
                 .anySatisfy(p -> assertThat(p.runsCompleted()).isGreaterThanOrEqualTo(4));
         assertThat(ctx.support().messages(admin)).hasSize(3);
-        assertThat(ctx.admin().loginActivity(admin, 1000)).hasSizeGreaterThan(50);
+        assertThat(ctx.admin().loginActivity(admin, 1000)).hasSizeGreaterThan(50)
+                .anySatisfy(e -> assertThat(e.outcome()).isEqualTo(LoginEvent.Outcome.WRONG_CREDENTIALS));
+        assertThat(ctx.admin().auditLog(admin, 100)).extracting(AuditEvent::action)
+                .contains("ACCOUNT_LOCKED", "PASSWORD_RESET", "PASSWORD_CHANGED");
+        assertThat(ctx.auth().login("tanvir@matbank.demo", DemoSeeder.CLIENT_PASSWORD, Role.CLIENT, null))
+                .isInstanceOf(AuthService.LoginResult.Success.class);
 
         // Every balance must match its ledger after months of simulated activity.
         TestBank.assertLedgerConsistent(db);

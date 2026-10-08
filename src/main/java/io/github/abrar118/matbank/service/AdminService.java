@@ -43,8 +43,8 @@ public final class AdminService {
         }
     }
 
-    /** Daily volume of money moved by clients (deposits plus transfers sent). */
-    public record DailyVolume(LocalDate date, Money deposits, Money transfers) {
+    /** Money moved by clients on one day: deposits and transfers sent, as totals and as counts. */
+    public record DailyVolume(LocalDate date, Money deposits, Money transfers, int depositCount, int transferCount) {
     }
 
     public record Overview(long clients, Money holdings, long signInsToday, long failedSignInsToday,
@@ -159,7 +159,7 @@ public final class AdminService {
         return db.read(c -> {
             Map<LocalDate, long[]> buckets = new LinkedHashMap<>();
             for (LocalDate d = first; !d.isAfter(today); d = d.plusDays(1)) {
-                buckets.put(d, new long[2]);
+                buckets.put(d, new long[4]);
             }
             for (LedgerEntry e : ledger.allSince(c, first.atStartOfDay(zone).toInstant())) {
                 long[] bucket = buckets.get(LocalDate.ofInstant(e.createdAt(), zone));
@@ -168,12 +168,15 @@ public final class AdminService {
                 }
                 if (e.kind() == TxKind.DEPOSIT) {
                     bucket[0] += e.amount().cents();
+                    bucket[2]++;
                 } else if (e.kind() == TxKind.TRANSFER_OUT) {
                     bucket[1] += e.amount().abs().cents();
+                    bucket[3]++;
                 }
             }
             List<DailyVolume> volume = new ArrayList<>();
-            buckets.forEach((d, b) -> volume.add(new DailyVolume(d, Money.ofCents(b[0]), Money.ofCents(b[1]))));
+            buckets.forEach((d, b) -> volume.add(new DailyVolume(d, Money.ofCents(b[0]), Money.ofCents(b[1]),
+                    (int) b[2], (int) b[3])));
             return new Overview(
                     users.count(c, Role.CLIENT),
                     accounts.totalHoldings(c),
