@@ -37,11 +37,19 @@ jobs:
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y fakeroot
 
-      - name: Install WiX Toolset 3 (msi packaging)
+      - name: Make WiX Toolset 3 available (msi packaging)
         if: runner.os == 'Windows'
         run: |
-          choco install wixtoolset --version 3.14.1 -y --no-progress
-          echo "C:\Program Files (x86)\WiX Toolset v3.14\bin" >> $env:GITHUB_PATH
+          # GitHub's Windows images usually ship WiX 3; install it only if it's missing.
+          $wix = Get-ChildItem "C:\Program Files (x86)" -Directory -Filter "WiX Toolset v3*" -ErrorAction SilentlyContinue |
+                 Sort-Object Name -Descending | Select-Object -First 1
+          if (-not $wix) {
+            choco install wixtoolset -y --no-progress
+            $wix = Get-ChildItem "C:\Program Files (x86)" -Directory -Filter "WiX Toolset v3*" |
+                   Sort-Object Name -Descending | Select-Object -First 1
+          }
+          "$($wix.FullName)\bin" | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
+          Write-Host "Using $($wix.FullName)"
 
       - name: Build installer
         shell: bash
