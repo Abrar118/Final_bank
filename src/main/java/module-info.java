@@ -3,7 +3,6 @@ module com.example.final_bank {
     requires javafx.fxml;
     requires de.jensd.fx.glyphs.fontawesome;
     requires java.desktop;
-    requires java.mail;
 
 
     opens com.example.final_bank to javafx.fxml;

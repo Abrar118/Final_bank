@@ -137,11 +137,6 @@ public class View_manager
         create_stage(fxmlLoader);
     }
 
-    public void show_forgot_pass() throws IOException
-    {
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("fxml/forgot_pass.fxml"));
-        create_stage(fxmlLoader);
-    }
 
     public void show_about_us() throws IOException
     {

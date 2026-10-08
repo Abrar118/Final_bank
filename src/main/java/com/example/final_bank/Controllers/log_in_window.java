@@ -67,8 +67,7 @@ public class log_in_window implements Initializable
         contact_admin.setOnMouseClicked(MouseEvent -> {try{Model.get_model().get_view_manager().show_customer_care();}
         catch (IOException e) {e.printStackTrace();}});
 
-        forgot_password.setOnMouseClicked(MouseEvent-> {try {Model.get_model().get_view_manager().show_forgot_pass();}
-        catch (IOException e) {throw new RuntimeException(e);}});
+        forgot_password.setOnMouseClicked(MouseEvent -> client_error_message.setText("Ask an admin to reset your password"));
 
         add_listeners();
     }
