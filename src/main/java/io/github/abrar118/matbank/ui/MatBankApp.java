@@ -45,17 +45,22 @@ public class MatBankApp extends Application {
         boolean demo = Boolean.parseBoolean(System.getProperty("matbank.demo", "true"));
         if (demo && DemoSeeder.isEmpty(context)) {
             window.notifier().info("Setting up a demo bank for your first visit...");
+            // The scheduler must wait: the seeder replays past dates, and live payments mixed in would break the
+            // ledger's time order.
             Async.run(() -> new DemoSeeder(context).seedIfEmpty(), seeded -> {
-                window.setReady(true);
+                ready(window);
                 window.notifier().success("Demo bank ready. Pick a demo account on the sign-in screen.");
             }, error -> {
-                window.setReady(true);
+                ready(window);
                 window.notifier().error("Could not create demo data: " + error);
             });
         } else {
-            window.setReady(true);
+            ready(window);
         }
+    }
 
+    private void ready(AppWindow window) {
+        window.setReady(true);
         context.startScheduler(summary -> Platform.runLater(() -> window.onScheduledPayments(summary)));
     }
 

@@ -8,8 +8,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * Regenerates the README screenshots from the demo data:
- * {@code xvfb-run -s "-screen 0 1600x1000x24" mvn -q test-compile exec:java ...} or run {@code main} from the IDE.
+ * Regenerates the README screenshots from the demo data. Run {@code docs/screenshots.sh}, or this {@code main}
+ * from the IDE with JavaFX on the module path.
  *
  * @see UiHarness
  */

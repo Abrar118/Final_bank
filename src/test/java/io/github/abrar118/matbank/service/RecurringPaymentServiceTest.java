@@ -1,5 +1,6 @@
 package io.github.abrar118.matbank.service;
 
+import io.github.abrar118.matbank.AppContext;
 import io.github.abrar118.matbank.TestBank;
 import io.github.abrar118.matbank.domain.Frequency;
 import io.github.abrar118.matbank.domain.Money;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.io.TempDir;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.concurrent.Executors;
 
 import static io.github.abrar118.matbank.domain.AccountType.CHECKING;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -122,6 +124,35 @@ class RecurringPaymentServiceTest {
         assertThat(resumed.nextRun()).isEqualTo(today.plusWeeks(3));
         assertThat(recurring.runDuePayments().isEmpty()).isTrue();
         assertThat(bank.balance(landlord, CHECKING)).isEqualTo(Money.ZERO);
+    }
+
+    @Test
+    void twoAppInstancesNeverPayTheSameOccurrenceTwice() throws Exception {
+        recurring.create(tenant.id(), new NewPayment(CHECKING, landlord.email(), Money.of(100), null,
+                Frequency.DAILY, today));
+        bank.advance(Duration.ofDays(9)); // ten occurrences due
+        // A second context on the same database file behaves like a second running copy of the app.
+        AppContext other = new AppContext(bank.db, bank.clock, bank.ctx.hasher(), bank.ctx.exchangeRates());
+
+        var pool = Executors.newFixedThreadPool(2);
+        var first = pool.submit(recurring::runDuePayments);
+        var second = pool.submit(() -> other.recurring().runDuePayments());
+        int paid = first.get().paid() + second.get().paid();
+        pool.shutdown();
+
+        assertThat(paid).isEqualTo(10);
+        assertThat(bank.balance(landlord, CHECKING)).isEqualTo(Money.of(1_000));
+        assertThat(recurring.list(tenant.id()).getFirst().runsCompleted()).isEqualTo(10);
+        bank.assertLedgerConsistent();
+    }
+
+    @Test
+    void reportsWhoWasAffected() {
+        recurring.create(tenant.id(), new NewPayment(CHECKING, landlord.email(), Money.of(100), null,
+                Frequency.WEEKLY, today));
+        var summary = recurring.runDuePayments();
+        assertThat(summary.payers()).containsExactly(tenant.id());
+        assertThat(summary.affectedUsers()).containsExactlyInAnyOrder(tenant.id(), landlord.id());
     }
 
     @Test

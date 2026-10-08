@@ -124,13 +124,16 @@ public final class AppWindow {
 
     /** Called (on the FX thread) after the background scheduler paid or skipped scheduled payments. */
     public void onScheduledPayments(RecurringPaymentService.RunSummary summary) {
-        if (workspace == null || workspace.user().isAdmin()) {
+        if (workspace == null || workspace.user().isAdmin()
+                || !summary.affectedUsers().contains(workspace.user().id())) {
             return;
         }
-        workspace.refresh();
-        String text = summary.paid() + " scheduled payment" + (summary.paid() == 1 ? "" : "s") + " processed"
-                + (summary.skipped() > 0 ? ", " + summary.skipped() + " skipped" : "") + ".";
-        notifier.info(text);
+        workspace.refreshReadOnlyPage();
+        if (summary.payers().contains(workspace.user().id())) {
+            notifier.info("Your scheduled payments ran. See Scheduled payments for details.");
+        } else {
+            notifier.info("You received a scheduled payment.");
+        }
     }
 
     private void setContent(Node node) {

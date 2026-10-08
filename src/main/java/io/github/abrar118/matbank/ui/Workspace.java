@@ -137,9 +137,12 @@ public final class Workspace {
         show(items.get(id), page);
     }
 
-    /** Rebuilds the current page, e.g. after a background job changed balances. */
-    public void refresh() {
-        if (current != null) {
+    /**
+     * Rebuilds the current page after a background job changed balances, unless it's a form the user may be
+     * filling in.
+     */
+    public void refreshReadOnlyPage() {
+        if (List.of(DASHBOARD, HISTORY, SCHEDULED, OVERVIEW).contains(current)) {
             navigate(current);
         }
     }

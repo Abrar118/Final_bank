@@ -51,6 +51,7 @@ public final class ClientsPage implements Page {
     private final User admin;
     private final String initialSearch;
     private final ListView<User> list = new ListView<>();
+    private final Label count = Ui.muted("");
     private final VBox details = new VBox(16);
 
     public ClientsPage(Workspace workspace, String initialSearch) {
@@ -91,8 +92,8 @@ public final class ClientsPage implements Page {
 
         Button add = Ui.primary("New client", Material2OutlinedMZ.PERSON_ADD);
         add.setOnAction(e -> openCreateDialog(workspace));
-        Label count = Ui.muted("");
-        list.itemsProperty().addListener((obs, o, n) -> count.setText(n.size() + " clients"));
+        list.getItems().addListener((javafx.collections.ListChangeListener<User>) change ->
+                count.setText(list.getItems().size() + (list.getItems().size() == 1 ? " client" : " clients")));
 
         VBox left = Ui.card(new HBox(10, Ui.sectionTitle("Clients"), Ui.spacer(), add), search, count, list);
         left.setPrefWidth(360);

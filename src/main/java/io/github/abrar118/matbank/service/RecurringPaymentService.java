@@ -10,10 +10,14 @@ import io.github.abrar118.matbank.domain.RecurringPayment;
 import io.github.abrar118.matbank.domain.Role;
 import io.github.abrar118.matbank.domain.User;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Standing orders. Due payments are processed when the app starts and then every minute while it runs,
@@ -27,8 +31,12 @@ public final class RecurringPaymentService {
                              Frequency frequency, LocalDate startDate) {
     }
 
-    /** What a processing run did. */
-    public record RunSummary(int paid, int skipped) {
+    /**
+     * What a processing run did.
+     *
+     * @param affectedUsers payers and recipients whose balances or schedules changed
+     */
+    public record RunSummary(int paid, int skipped, Set<Long> payers, Set<Long> affectedUsers) {
 
         public boolean isEmpty() {
             return paid == 0 && skipped == 0;
@@ -106,20 +114,33 @@ public final class RecurringPaymentService {
         db.write(c -> payments.delete(c, p.id()));
     }
 
-    /** Pays every occurrence that is due today or earlier. Safe to call repeatedly. */
-    public RunSummary runDuePayments() {
+    /**
+     * Pays every occurrence that is due today or earlier. Safe to call repeatedly and from several threads or app
+     * instances: each occurrence is claimed inside the paying transaction, so it is paid at most once.
+     */
+    public synchronized RunSummary runDuePayments() {
         LocalDate today = LocalDate.now(clock);
         int paid = 0;
         int skipped = 0;
+        Set<Long> payers = new HashSet<>();
+        Set<Long> affected = new HashSet<>();
         for (RecurringPayment due : db.read(c -> payments.due(c, today))) {
             RecurringPayment p = due;
             int processed = 0;
             while (p.active() && !p.nextRun().isAfter(today) && processed < MAX_CATCH_UP) {
-                if (runOnce(p)) {
+                Outcome outcome = runOnce(p);
+                if (outcome == Outcome.ALREADY_DONE) {
+                    break;
+                }
+                if (outcome == Outcome.PAID) {
                     paid++;
                 } else {
                     skipped++;
                 }
+                payers.add(p.userId());
+                affected.add(p.userId());
+                String recipient = p.recipientEmail();
+                db.read(c -> users.findByEmail(c, recipient)).ifPresent(u -> affected.add(u.id()));
                 processed++;
                 long id = p.id();
                 p = db.read(c -> payments.find(c, id)).orElse(null);
@@ -128,33 +149,54 @@ public final class RecurringPaymentService {
                 }
             }
         }
-        return new RunSummary(paid, skipped);
+        return new RunSummary(paid, skipped, Set.copyOf(payers), Set.copyOf(affected));
+    }
+
+    private enum Outcome {
+        PAID, SKIPPED, ALREADY_DONE
     }
 
     /** Processes one occurrence: pay it and advance the schedule in the same transaction. */
-    private boolean runOnce(RecurringPayment p) {
+    private Outcome runOnce(RecurringPayment p) {
         LocalDate occurrence = p.nextRun();
         int runs = p.runsCompleted() + 1;
         LocalDate next = p.frequency().occurrence(p.startDate(), runs);
         try {
-            db.write(c -> {
+            boolean paid = db.inTransaction(c -> {
+                // Writes run in BEGIN IMMEDIATE transactions, so this check and the payment can't interleave with
+                // another thread or process handling the same occurrence.
+                if (!stillDue(c, p)) {
+                    return false;
+                }
                 String note = p.note() == null ? "Scheduled payment" : p.note();
                 Receipt receipt = banking.transfer(c, p.userId(), p.fromAccount(), p.recipientEmail(), p.amount(),
                         note, clock.instant());
                 payments.recordRun(c, p.id(), runs, next,
                         "Paid " + receipt.total().format() + " on " + DATE.format(occurrence));
+                return true;
             });
-            return true;
+            return paid ? Outcome.PAID : Outcome.ALREADY_DONE;
         } catch (BankException e) {
             boolean recipientGone = e.reason() == BankException.Reason.RECIPIENT_NOT_FOUND;
-            db.write(c -> {
+            boolean recorded = db.inTransaction(c -> {
+                if (!stillDue(c, p)) {
+                    return false;
+                }
                 payments.recordRun(c, p.id(), runs, next, "Skipped " + DATE.format(occurrence) + ": " + e.getMessage());
                 if (recipientGone) {
                     payments.setActive(c, p.id(), false, "Stopped: " + e.getMessage());
                 }
+                return true;
             });
-            return false;
+            return recorded ? Outcome.SKIPPED : Outcome.ALREADY_DONE;
         }
+    }
+
+    private boolean stillDue(Connection c, RecurringPayment expected) throws SQLException {
+        return payments.find(c, expected.id())
+                .filter(RecurringPayment::active)
+                .filter(current -> current.runsCompleted() == expected.runsCompleted())
+                .isPresent();
     }
 
     private RecurringPayment owned(long userId, long paymentId) {
